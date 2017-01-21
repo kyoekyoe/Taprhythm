@@ -1,6 +1,6 @@
 #Taprhythm
 最新版コードです。
-ダウンロードは、（ https://goo.gl/E1inbV ）から、Downloadを押して下さい。（重いです。約20MB）
+ダウンロードは、（ https://github.com/kyoekyoe/Taprhythm/blob/master/TapRhythm.zip ）から、Downloadを押して下さい。（重いです。約20MB）
 #使い方
 1.再生ボタン（画面左）を押して、メトロノームに合わせて流れる太鼓の音を聞いて覚える。<br>
 2.録音ボタン（画面右）を押して、4拍のメトロノームを聞いた後、1.で覚えたリズムと同じリズムで太鼓（画面中央）を叩く。<br>
