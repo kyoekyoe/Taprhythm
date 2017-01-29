@@ -124,9 +124,8 @@ public class GameScreen implements Screen {
     public void saiteigi(){
 
     }
-    @Override
-    public void create(){
-
+    public GameScreen(final taprhythm game) {
+        this.game = game;
         // LibGDXのデフォルトフォント(Arial)を利用します
         // カメラを生成します
         camera = new OrthographicCamera();
