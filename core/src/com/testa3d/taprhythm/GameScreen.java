@@ -72,9 +72,9 @@ public class GameScreen implements Screen {
     private List<Integer> minposi = new ArrayList<Integer>();
     private Music muon;
     private float k = 0.0001f; //減点係数/*//TODO:　数字が大きいほど、減点が大きくなり点数が下がる*/
-    private List<Integer> musicdata = new ArrayList<Integer>(){
+    //Music -- Data
+    private List<Integer> musicdata;/* = new ArrayList<Integer>(){
         {
-            //         add(1);
             add(1);
             add(0);
             add(1);
@@ -91,16 +91,115 @@ public class GameScreen implements Screen {
             add(0);
             add(1);
             add(0);
-              /* add(0);
+
+        }
+    };*/
+    private List<Integer> musicdata1 = new ArrayList<Integer>(){
+        {
+            add(1);
             add(0);
+            add(1);
             add(0);
+            add(1);
+            add(1);
+            add(1);
             add(0);
+            add(1);
             add(0);
+            add(1);
+            add(1);
             add(0);
+            add(1);
+            add(1);
             add(0);
-            add(0);*/
+
         }
     };
+    private List<Integer> musicdata2 = new ArrayList<Integer>(){
+        {
+            add(1);
+            add(1);
+            add(0);
+            add(1);
+            add(1);
+            add(0);
+            add(1);
+            add(0);
+            add(1);
+            add(1);
+            add(1);
+            add(1);
+            add(1);
+            add(0);
+            add(0);
+            add(0);
+
+        }
+    };
+    private List<Integer> musicdata3 = new ArrayList<Integer>(){
+        {
+            add(1);
+            add(0);
+            add(1);
+            add(1);
+            add(0);
+            add(1);
+            add(0);
+            add(1);
+            add(1);
+            add(0);
+            add(1);
+            add(1);
+            add(0);
+            add(1);
+            add(1);
+            add(0);
+
+        }
+    };
+    private List<Integer> musicdata4 = new ArrayList<Integer>(){
+        {
+            add(1);
+            add(1);
+            add(1);
+            add(1);
+            add(1);
+            add(0);
+            add(1);
+            add(1);
+            add(0);
+            add(1);
+            add(0);
+            add(1);
+            add(1);
+            add(0);
+            add(1);
+            add(0);
+
+        }
+    };
+    private List<Integer> musicdata5 = new ArrayList<Integer>(){
+        {
+            add(1);
+            add(1);
+            add(0);
+            add(1);
+            add(1);
+            add(1);
+            add(0);
+            add(1);
+            add(1);
+            add(1);
+            add(0);
+            add(1);
+            add(1);
+            add(0);
+            add(1);
+            add(0);
+
+        }
+    };
+    //Music-Data ** End
     private Random rnd = new Random();
     private Sound snaresound;
     private Sound metorotin;
@@ -126,6 +225,7 @@ public class GameScreen implements Screen {
     }
     public GameScreen(final taprhythm game) {
         this.game = game;
+        musicdata = new ArrayList(musicdata1);
         // LibGDXのデフォルトフォント(Arial)を利用します
         // カメラを生成します
         camera = new OrthographicCamera();
@@ -439,9 +539,12 @@ public class GameScreen implements Screen {
 
 
                                     Gdx.app.log("taprhythm:endscore",String.valueOf(scoreg));
-                                    scoreText.text = "あなたの得点は...";
+                                    MainMenuScreen screen = new MainMenuScreen(game);
+                                    screen.setGscore(scoreg);
+                                    game.setScreen(screen);
+                                  /*  scoreText.text = "あなたの得点は...";
                                     //wait
-                                    scoreText.text = scoreText.text + String.valueOf(scoreg) + "点です.";
+                                    scoreText.text = scoreText.text + String.valueOf(scoreg) + "点です.";*/
 
                                     //-----------------------得点計算-------------------------------
                                 }

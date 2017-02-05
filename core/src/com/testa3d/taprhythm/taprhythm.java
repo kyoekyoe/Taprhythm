@@ -7,15 +7,10 @@ import com.testa3d.taprhythm.MainMenuScreen;
 
 public class taprhythm extends Game {
 
-	public SpriteBatch batch;
-	public BitmapFont font;
 
 	public void create() {
-		batch = new SpriteBatch();
 
-		// LibGDXのデフォルトフォント(Arial)を利用します
-		font = new BitmapFont();
-		this.setScreen(new MainMenuScreen(this));
+		this.setScreen(new GameScreen(this));
 	}
 
 	public void render() {
@@ -23,8 +18,6 @@ public class taprhythm extends Game {
 	}
 
 	public void dispose() {
-		// 読み込んだリソースを破棄します
-		batch.dispose();
-		font.dispose();
+
 	}
 }
