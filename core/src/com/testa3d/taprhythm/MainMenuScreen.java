@@ -10,6 +10,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 
@@ -31,10 +32,16 @@ public class MainMenuScreen implements Screen {
     private double dtokuten;
     private String escore;
     private Stage stage;
+    private Image im1;
+    private Image im2;
+    private Image im3;
+    private Image im4;
+    private Image im5;
+
     public MainMenuScreen(final taprhythm game) {
         this.game = game;
         escore ="";
-
+    
     }
     public void settokuten(){
 
