@@ -528,10 +528,10 @@ public class GameScreen implements Screen {
 
 
                                         //上下限ガード
-                                        if (score0 > 100.00f) {
-                                            score0 = 100.00f;
+                                        if (score0 >= 100.00f) {
+                                            score0 = 99.999f;
                                         } else if (score0 < 0.00f) {
-                                            score0 = 0.00f;
+                                            score0 = 0.000f;
                                         }
                                     }
                                     //スコア格納
