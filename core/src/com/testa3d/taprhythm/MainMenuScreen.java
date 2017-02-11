@@ -9,6 +9,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -23,11 +24,11 @@ public class MainMenuScreen implements Screen {
 
     final taprhythm game;
     private float score;
-    private String one;
-    private String two;
-    private String three;
-    private String four;
-    private String five;
+    private String one = "0";
+    private String two = "0";
+    private String three = "0";
+    private String four = "0";
+    private String five = "0";
     OrthographicCamera camera;
     private double dtokuten;
     private String escore;
@@ -41,7 +42,23 @@ public class MainMenuScreen implements Screen {
     public MainMenuScreen(final taprhythm game) {
         this.game = game;
         escore ="";
-    
+        stage = new Stage(new FitViewport(1920,1080));  //ステージ作成処理
+        im1 = new Image(new Texture(Gdx.files.internal("blue"+one+".png")));
+        im2 = new Image(new Texture(Gdx.files.internal("blue"+two+".png")));
+        im3 = new Image(new Texture(Gdx.files.internal("red"+three+".png")));
+        im4 = new Image(new Texture(Gdx.files.internal("red"+four+".png")));
+        im5 = new Image(new Texture(Gdx.files.internal("red"+five+".png")));
+        im1.setPosition(stage.getWidth() * 0.1f,stage.getHeight() / 2);
+        im2.setPosition(stage.getWidth() * 0.25f,stage.getHeight() / 2);
+        im3.setPosition(stage.getWidth() * 0.55f,stage.getHeight() / 2);
+        im4.setPosition(stage.getWidth() * 0.65f,stage.getHeight() / 2);
+        im5.setPosition(stage.getWidth() * 0.7f,stage.getHeight() / 2);
+        stage.addActor(im1);
+        stage.addActor(im2);
+        stage.addActor(im3);
+        stage.addActor(im4);
+        stage.addActor(im5);
+
     }
     public void settokuten(){
 
@@ -66,10 +83,28 @@ public class MainMenuScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(255 / 255.f, 255 / 255.f, 255 / 255.f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        stage = new Stage(new FitViewport(1920,1080));  //ステージ作成処理
-
-
+        im1.remove();
+        im2.remove();
+        im3.remove();
+        im4.remove();
+        im5.remove();
+        im1 = new Image(new Texture(Gdx.files.internal("blue"+one+".png")));
+        im2 = new Image(new Texture(Gdx.files.internal("blue"+two+".png")));
+        im3 = new Image(new Texture(Gdx.files.internal("red"+three+".png")));
+        im4 = new Image(new Texture(Gdx.files.internal("red"+four+".png")));
+        im5 = new Image(new Texture(Gdx.files.internal("red"+five+".png")));
+        im1.setPosition(stage.getWidth() * 0.1f,stage.getHeight() / 2);
+        im2.setPosition(stage.getWidth() * 0.2f,stage.getHeight() / 2);
+        im3.setPosition(stage.getWidth() * 0.35f,stage.getHeight() / 2);
+        im4.setPosition(stage.getWidth() * 0.45f,stage.getHeight() / 2);
+        im5.setPosition(stage.getWidth() * 0.55f,stage.getHeight() / 2);
+        stage.addActor(im1);
+        stage.addActor(im2);
+        stage.addActor(im3);
+        stage.addActor(im4);
+        stage.addActor(im5);
+        stage.act(Gdx.graphics.getDeltaTime());     // ステージの状態を前回render呼び出しからの経過時間(delta time)分だけ更新する
+        stage.draw();
     }
 
     @Override
