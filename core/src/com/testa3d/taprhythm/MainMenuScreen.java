@@ -7,6 +7,7 @@ import com.badlogic.gdx.Screen;
  * Created by Test A 3D on 2017/01/29.
  */
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -43,6 +44,7 @@ public class MainMenuScreen implements Screen {
     private Image im3;
     private Image im4;
     private Image im5;
+    private Sound roll;
     int onrandom = 0;
     Random rnd = new Random();
     public MainMenuScreen(final taprhythm game) {
@@ -161,9 +163,13 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void show() {
-    dtokuten = score;
+        roll = Gdx.audio.newSound(Gdx.files.internal("roll.ogg"));//ロールの音色定義
+
+        dtokuten = score;
         onrandom = 5;
+        roll.play();
    stage.addAction(randomend);
+
     }
     private final Action randomend = sequence(
             delay(2),
