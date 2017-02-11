@@ -10,6 +10,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -17,7 +18,11 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.Random;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 
 public class MainMenuScreen implements Screen {
@@ -38,7 +43,8 @@ public class MainMenuScreen implements Screen {
     private Image im3;
     private Image im4;
     private Image im5;
-
+    int onrandom = 0;
+    Random rnd = new Random();
     public MainMenuScreen(final taprhythm game) {
         this.game = game;
         escore ="";
@@ -83,6 +89,35 @@ public class MainMenuScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(255 / 255.f, 255 / 255.f, 255 / 255.f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        if(onrandom == 5){
+            one = String.valueOf(rnd.nextInt(10));
+            two = String.valueOf(rnd.nextInt(10));
+            three = String.valueOf(rnd.nextInt(10));
+            four = String.valueOf(rnd.nextInt(10));
+              five = String.valueOf(rnd.nextInt(10));
+        }
+        if(onrandom == 4){
+            one = String.valueOf(rnd.nextInt(10));
+            two = String.valueOf(rnd.nextInt(10));
+            three = String.valueOf(rnd.nextInt(10));
+            four = String.valueOf(rnd.nextInt(10));
+          //  five = String.valueOf(rnd.nextInt(10));
+        }
+        if(onrandom == 3){
+            one = String.valueOf(rnd.nextInt(10));
+            two = String.valueOf(rnd.nextInt(10));
+            three = String.valueOf(rnd.nextInt(10));
+           // four = String.valueOf(rnd.nextInt(10));
+            //  five = String.valueOf(rnd.nextInt(10));
+        }
+        if(onrandom == 2){
+            one = String.valueOf(rnd.nextInt(10));
+            two = String.valueOf(rnd.nextInt(10));
+           // three = String.valueOf(rnd.nextInt(10));
+           // four = String.valueOf(rnd.nextInt(10));
+            //  five = String.valueOf(rnd.nextInt(10));
+        }
+
         im1.remove();
         im2.remove();
         im3.remove();
@@ -127,10 +162,40 @@ public class MainMenuScreen implements Screen {
     @Override
     public void show() {
     dtokuten = score;
-        settokuten();
-
+        onrandom = 5;
+   stage.addAction(randomend);
     }
-
+    private final Action randomend = sequence(
+            delay(2),
+            run(new Runnable() {
+                @Override
+                public void run() {
+                    onrandom = 4;
+                    settokuten();
+                }
+                }),
+            delay(0.5f),
+            run(new Runnable() {
+                @Override
+                public void run() {
+                    onrandom = 3;
+                    settokuten();
+                }
+            }),            delay(0.5f),
+            run(new Runnable() {
+                @Override
+                public void run() {
+                    onrandom = 2;
+                    settokuten();
+                }
+            }),     delay(1.8f),
+            run(new Runnable() {
+                @Override
+                public void run() {
+                    onrandom = 1;
+                    settokuten();
+                }
+            }));
     @Override
     public void hide() {
 

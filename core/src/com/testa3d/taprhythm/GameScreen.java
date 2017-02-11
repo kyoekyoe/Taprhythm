@@ -343,8 +343,8 @@ public class GameScreen implements Screen {
 				 */
                 muon.play();
                 Action metronome = sequence(run(new Runnable() {
-                            @Override
-                            public void run() {
+                                        @Override
+                                        public void run() {
                                 starttime = TimeUtils.millis() + 2000;  //4拍分イントロ(2000ms)オフセット
                                 taplist.clear();
                                 diffrencelist.clear();
