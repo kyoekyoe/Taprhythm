@@ -11,7 +11,10 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -29,6 +32,18 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 public class MainMenuScreen implements Screen {
 
     final taprhythm game;
+    private static final class ScoreText extends Actor {
+        String text = "";
+        BitmapFont font = new BitmapFont(Gdx.files.internal("m_plus_1p.fnt"));
+
+        @Override
+        public void draw(Batch batch, float parentAlpha) {
+            super.draw(batch, parentAlpha);
+            font.draw(batch, text, getX(), getY());
+        }
+    }
+    private ScoreText scoreText;
+    private ScoreText dot;
     private float score;
     private String one = "0";
     private String two = "0";
@@ -66,7 +81,14 @@ public class MainMenuScreen implements Screen {
         stage.addActor(im3);
         stage.addActor(im4);
         stage.addActor(im5);
-
+        scoreText = new ScoreText();
+        scoreText.text = "Your Score is ...";
+        scoreText.setPosition(150, stage.getHeight() - 40);
+        stage.addActor(scoreText);
+        dot = new ScoreText();
+        dot.text = ".";
+        dot.setPosition(stage.getWidth() * 0.31f,stage.getHeight() / 2+42);
+        stage.addActor(dot);
     }
     public void settokuten(){
 
