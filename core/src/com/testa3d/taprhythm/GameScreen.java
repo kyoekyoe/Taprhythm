@@ -34,6 +34,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.parallel;
@@ -202,6 +204,8 @@ public class GameScreen implements Screen {
     //Music-Data ** End
     private Random rnd = new Random();
     private Sound snaresound;
+    private Timer timer = new Timer();
+
     private Sound metorotin;
     private Sound metoroka;
     private int soundcount;
@@ -342,61 +346,31 @@ public class GameScreen implements Screen {
 				・拡大処理
 				 */
                 muon.play();
-                Action metronome = sequence(run(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                starttime = TimeUtils.millis() + 2000;  //4拍分イントロ(2000ms)オフセット
-                                taplist.clear();
-                                diffrencelist.clear();
-                                minposi.clear();
+          TimerTask metrorec = new TimerTask(){
 
-                                //	Gdx.app.log("taprhythm:score0",String.valueOf(score));
-                                Gdx.app.log("taprhythm",String.valueOf(starttime));
-                            }
-                        }),repeat(3,sequence(
+                    int cnt = 0;
 
-                        run(new Runnable() {
-                            @Override
-                            public void run() {
+                    public void run() {
+                        if(cnt < 24){
+                            if(cnt % 8 == 0){
                                 metorotin.play();
                             }
-                        }),
-                        delay(0.5f),
-                        run(new Runnable() {
-                            @Override
-                            public void run() {
+                            if(cnt % 2 == 0 && cnt % 8 != 0){
                                 metoroka.play();
                             }
-                        }),
-                        delay(0.5f),
-                        run(new Runnable() {
-                            @Override
-                            public void run() {
-                                metoroka.play();
-                            }
-                        }),
-                        delay(0.5f),
-                        run(new Runnable() {
-                            @Override
-                            public void run() {
-                                metoroka.play();
-                            }
-                        }),
-                        delay(0.5f)
-                        )),
-                        run(new Runnable() {
-                                @Override
-                                public void run() {
-                                    onrecord = false;
-                                    muon.stop();
-                                    Integer diffminpositmp = 0;
-                                    List<Integer> diffminposi = new ArrayList<Integer>();
-                                    Gdx.app.log("taprhythm:taplist", String.valueOf(taplist));
-                                    //Gdx.app.log("taprhythm",String.valueOf(diffrencelist));
-                                    Gdx.app.log("taprhythm:diffrencelist", diffrencelist.toString());
-                                    Gdx.app.log("taprhythm:otehonlist", otehon.toString());
-                                    Gdx.app.log("taprhythm:minposi", minposi.toString());
-                                    //-----------------------得点計算-------------------------------
+                            cnt++;
+                        }
+                        if(cnt == 23){
+                            onrecord = false;
+                            muon.stop();
+                            Integer diffminpositmp = 0;
+                            List<Integer> diffminposi = new ArrayList<Integer>();
+                            Gdx.app.log("taprhythm:taplist", String.valueOf(taplist));
+                            //Gdx.app.log("taprhythm",String.valueOf(diffrencelist));
+                            Gdx.app.log("taprhythm:diffrencelist", diffrencelist.toString());
+                            Gdx.app.log("taprhythm:otehonlist", otehon.toString());
+                            Gdx.app.log("taprhythm:minposi", minposi.toString());
+                            //-----------------------得点計算-------------------------------
                                 /*TODO:TODO:
                                 TODO:復旧用
 								float  score0 = 100.00f;
@@ -431,129 +405,143 @@ public class GameScreen implements Screen {
 								}
 								Gdx.app.log("taprhythm:endscore",String.valueOf(score0));
 								scoreg = score0;*/
-                                    // TODO:復旧用
+                            // TODO:復旧用
 
-                                    //お手本の位置ごとに、最も近いタップを探す------------------
-                                    float score0 = 100.00f;
-                                    if(taplist.size() == 0){
-                                        score0 = 0;
+                            //お手本の位置ごとに、最も近いタップを探す------------------
+                            float score0 = 100.00f;
+                            if(taplist.size() == 0){
+                                score0 = 0;
 
-                                    }else {
+                            }else {
 
-                                        for (int otint = 0; otint < otehon.size(); otint++) {    //お手本の数分ループ
-                                            //タップ回数でループ----------------
+                                for (int otint = 0; otint < otehon.size(); otint++) {    //お手本の数分ループ
+                                    //タップ回数でループ----------------
 
-                                            int cntotehon = 0;    //お手本カウンタ初期化
-                                            for (int difint = 0; difint < minposi.size(); difint++) {		//タップした数分ループ
-                                                ; //タップ位置総当たり(minposiのサイズ分ループ)
+                                    int cntotehon = 0;    //お手本カウンタ初期化
+                                    for (int difint = 0; difint < minposi.size(); difint++) {		//タップした数分ループ
+                                        ; //タップ位置総当たり(minposiのサイズ分ループ)
 
-                                                //該当位置以外では判定をスキップ（→次のminposiに）
-                                                if (minposi.get(difint) != otint) {
-                                                    continue;    //判定スキップ
-                                                }
-
-
-                                                if (difint == 0) {//初回(difint==0)のみ特別処理
-                                                    diffminpositmp = -1;    //初期化
-
-
-                                                    if (minposi.get(difint) == otint) {
-                                                        diffminpositmp = 0;    //初期化
-
-                                                    }
-                                                } else {            //2回目以降
-
-                                                    // -------- 仮の最小差分位置の決定 ----------- //
-                                                    // ->
-                                                    if (minposi.get(difint) == minposi.get(difint - 1)) {		//	前回タップ位置と今回タップ位置に対応する 最も近いお手本の位置が等しい場合のしょり
-                                                        if (diffrencelist.get(difint) < diffrencelist.get(difint - 1)) {	// 前回タップ位置の差分値よりも今回タップ位置の差分値のほうが小さい場合
-                                                            // diffminpositmp = minposi.get(difint);    //仮の差分最小位置
-                                                            diffminpositmp = difint;    				//仮の差分最小位置(タップした位置のインデックス)を今回タップ位置のインデックスとする
-                                                        } else {
-                                                            // diffminpositmp = minposi.get(difint - 1);    //仮の差分最小位置
-                                                            diffminpositmp = difint - 1;    				//仮の差分最小位置(タップした位置のインデックス)を前回タップ位置のインデックスとする
-                                                        }
-                                                    } else {
-                                                        // diffminpositmp = minposi.get(difint);    //仮の差分最小位置
-                                                        diffminpositmp = difint;    //仮の差分最小位置(タップした位置のインデックス)を今回タップ位置のインデックスとする
-                                                    }
-
-
-                                                }
-
-                                            }
-
-                                            //差分最小となるインデックスを配列に格納
-                                            // (-1:該当タップなし)
-
-                                            diffminposi.add(diffminpositmp);
-
+                                        //該当位置以外では判定をスキップ（→次のminposiに）
+                                        if (minposi.get(difint) != otint) {
+                                            continue;    //判定スキップ
                                         }
 
 
-                                        Gdx.app.log("taprhythm:diffminposi", diffminposi.toString());
-                                        //お手本の位置ごとに、得点計算-----------------
-                                        for (int otint2 = 0; otint2 < otehon.size(); otint2++) {//お手本の数分ループ
-                                            if (diffminposi.get(otint2) >= 0) {
-                                                // 1 お手本からの差分に応じた減点
-                                                //	Gdx.app.log("taprhythm",String.valueOf(otint2));
-                                                score0 = score0 - (100.00f * (diffrencelist.get(diffminposi.get(otint2)) * k));
-                                            } else if (diffminposi.get(otint2) == -1) {
-                                                // 2 タップしなかったことによる減点
-                                                score0 = score0 - (100.00f / score0 - (100 / otehon.size()));
+                                        if (difint == 0) {//初回(difint==0)のみ特別処理
+                                            diffminpositmp = -1;    //初期化
+
+
+                                            if (minposi.get(difint) == otint) {
+                                                diffminpositmp = 0;    //初期化
+
+                                            }
+                                        } else {            //2回目以降
+
+                                            // -------- 仮の最小差分位置の決定 ----------- //
+                                            // ->
+                                            if (minposi.get(difint) == minposi.get(difint - 1)) {		//	前回タップ位置と今回タップ位置に対応する 最も近いお手本の位置が等しい場合のしょり
+                                                if (diffrencelist.get(difint) < diffrencelist.get(difint - 1)) {	// 前回タップ位置の差分値よりも今回タップ位置の差分値のほうが小さい場合
+                                                    // diffminpositmp = minposi.get(difint);    //仮の差分最小位置
+                                                    diffminpositmp = difint;    				//仮の差分最小位置(タップした位置のインデックス)を今回タップ位置のインデックスとする
+                                                } else {
+                                                    // diffminpositmp = minposi.get(difint - 1);    //仮の差分最小位置
+                                                    diffminpositmp = difint - 1;    				//仮の差分最小位置(タップした位置のインデックス)を前回タップ位置のインデックスとする
+                                                }
                                             } else {
-                                                // 想定外エラー
-                                                Gdx.app.log("souteigaisouteigai", "souteigaisouteigai");
+                                                // diffminpositmp = minposi.get(difint);    //仮の差分最小位置
+                                                diffminpositmp = difint;    //仮の差分最小位置(タップした位置のインデックス)を今回タップ位置のインデックスとする
                                             }
 
 
-                                            Gdx.app.log("taprhythm:forscore", String.valueOf(score0));
-                                            //上下限ガード
-                                            if (score0 > 100.00f) {
-                                                score0 = 100.00f;
-                                            } else if (score0 < 0.00f) {
-                                                score0 = 0.00f;
-                                            }
-
-                                        }
-                                        Gdx.app.log("taprhythm:上下限前score", String.valueOf(score0));
-                                        //多くタップした場合の減点
-                                        if (minposi.size() > otehon.size()) {
-                                            score0 = score0 * ((float) otehon.size() / (float) minposi.size());
-                                        }
-                                        //少なくタップした場合の減点
-                                        if (minposi.size() < otehon.size()) {
-                                            score0 = score0 * ((float) minposi.size() / (float) otehon.size());
                                         }
 
-
-                                        //上下限ガード
-                                        if (score0 >= 100.00f) {
-                                            score0 = 99.999f;
-                                        } else if (score0 < 0.00f) {
-                                            score0 = 0.000f;
-                                        }
                                     }
-                                    //スコア格納
-                                    scoreg=score0;
+
+                                    //差分最小となるインデックスを配列に格納
+                                    // (-1:該当タップなし)
+
+                                    diffminposi.add(diffminpositmp);
+
+                                }
 
 
-                                    Gdx.app.log("taprhythm:endscore",String.valueOf(scoreg));
-                                    MainMenuScreen screen = new MainMenuScreen(game);
-                                    screen.setGscore(scoreg);
-                                    game.setScreen(screen);
+                                Gdx.app.log("taprhythm:diffminposi", diffminposi.toString());
+                                //お手本の位置ごとに、得点計算-----------------
+                                for (int otint2 = 0; otint2 < otehon.size(); otint2++) {//お手本の数分ループ
+                                    if (diffminposi.get(otint2) >= 0) {
+                                        // 1 お手本からの差分に応じた減点
+                                        //	Gdx.app.log("taprhythm",String.valueOf(otint2));
+                                        score0 = score0 - (100.00f * (diffrencelist.get(diffminposi.get(otint2)) * k));
+                                    } else if (diffminposi.get(otint2) == -1) {
+                                        // 2 タップしなかったことによる減点
+                                        score0 = score0 - (100.00f / score0 - (100 / otehon.size()));
+                                    } else {
+                                        // 想定外エラー
+                                        Gdx.app.log("souteigaisouteigai", "souteigaisouteigai");
+                                    }
+
+
+                                    Gdx.app.log("taprhythm:forscore", String.valueOf(score0));
+                                    //上下限ガード
+                                    if (score0 > 100.00f) {
+                                        score0 = 100.00f;
+                                    } else if (score0 < 0.00f) {
+                                        score0 = 0.00f;
+                                    }
+
+                                }
+                                Gdx.app.log("taprhythm:上下限前score", String.valueOf(score0));
+                                //多くタップした場合の減点
+                                if (minposi.size() > otehon.size()) {
+                                    score0 = score0 * ((float) otehon.size() / (float) minposi.size());
+                                }
+                                //少なくタップした場合の減点
+                                if (minposi.size() < otehon.size()) {
+                                    score0 = score0 * ((float) minposi.size() / (float) otehon.size());
+                                }
+
+
+                                //上下限ガード
+                                if (score0 >= 100.00f) {
+                                    score0 = 99.999f;
+                                } else if (score0 < 0.00f) {
+                                    score0 = 0.000f;
+                                }
+                            }
+                            //スコア格納
+                            scoreg=score0;
+
+
+                            Gdx.app.log("taprhythm:endscore",String.valueOf(scoreg));
+                            timer.cancel();
+                            MainMenuScreen screen = new MainMenuScreen(game);
+                            screen.setGscore(scoreg);
+                            game.setScreen(screen);
                                   /*  scoreText.text = "あなたの得点は...";
                                     //wait
                                     scoreText.text = scoreText.text + String.valueOf(scoreg) + "点です.";*/
 
-                                    //-----------------------得点計算-------------------------------
-                                }
-                            }
-                        ));
-                stage.addAction(metronome);
+                            //-----------------------得点計算-------------------------------
+                        }
+                    }
+
+                    };
+
+
+                taplist.clear();
+                diffrencelist.clear();
+                minposi.clear();
+
+                //	Gdx.app.log("taprhythm:score0",String.valueOf(score));
+                //        Gdx.app.log("taprhythm",String.valueOf(starttime));
+                starttime = TimeUtils.millis() + 2000;  //4拍分イントロ(2000ms)オフセット
+
+                timer.scheduleAtFixedRate(metrorec, 250L,250L);
+
+
+
                 onrecord = true;
                 recbutton.setScale(1.2f);
-
             }
         });
         playbutton.addListener(new InputListener() {
@@ -571,12 +559,12 @@ public class GameScreen implements Screen {
 				再生ボタンのタッチアップイベント。
 				・ランダムリズムを再生
 				 */
-                if(onplay == false){
-                    onplay=true;
-                    Gdx.app.log("Taprhythm","OKOKOKOKOKOKOKOKOKOKOOOKOKO");
+                if (onplay == false) {
+                    onplay = true;
+                    Gdx.app.log("Taprhythm", "OKOKOKOKOKOKOKOKOKOKOOOKOKO");
                     muon.play();
                     soundcount = 0;
-                    Action autoplay = sequence(parallel(sequence(run(new Runnable() {
+                    /*Action autoplay = sequence(parallel(sequence(run(new Runnable() {
                                 @Override
                                 public void run() {
                                     playstarttime = TimeUtils.millis();//リセット
@@ -618,9 +606,9 @@ public class GameScreen implements Screen {
                                             run(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                        /*musicdata[1]
+                                        musicdata[1]
                                           int[]
-                                        */
+
 
                                                     if(musicdata.get(soundcount) == 1){
                                                         snaresound.play();
@@ -639,25 +627,46 @@ public class GameScreen implements Screen {
                             })
                     );
 
-                    stage.addAction(autoplay);
+                    stage.addAction(autoplay);*/
+                    TimerTask timerTask = new TimerTask() {
 
-                }else{
+                        int cnt = 0;
+
+                        public void run() {
+                            if (cnt < 24) {
+                                if (cnt % 8 == 0) {
+                                    metorotin.play();
+                                }
+                                if (cnt % 2 == 0 && cnt % 8 != 0) {
+                                    metoroka.play();
+                                }
+                                if (cnt > 7) {
+                                    if (musicdata.get(cnt - 8) == 1) {
+                                        snaresound.play();
+                                    }
+                                }
+                                soundcount++;
+                                cnt++;
+                            }
+                            if (cnt == 23) {
+                                muon.stop();
+                                onplay = false;
+                            }
+                        }
+                    };
+                    Timer timer = new Timer();
+                    timer.scheduleAtFixedRate(timerTask, 250L, 250L);
+
+                } else {
 
                 }
                 playbutton.setScale(1.2f);
-
             }
-        });
+            });
+                //Gdx.app.log("taprhythm",String.valueOf(ononeindex(musicdata)));
+                otehon = ononeindex(musicdata);
+            }
 
-
-        //Gdx.app.log("taprhythm",String.valueOf(ononeindex(musicdata)));
-        otehon = ononeindex(musicdata);
-        scoreText = new ScoreText();
-        scoreText.text = "";
-        scoreText.setPosition(32, stage.getHeight() - 40);
-        stage.addActor(scoreText);
-
-    }
 
 
 

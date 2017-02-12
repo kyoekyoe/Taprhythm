@@ -62,6 +62,7 @@ public class MainMenuScreen implements Screen {
     private Image YourScore;
     private Image dot;
     private Sound roll;
+    private Image sclabel;
   //  int onrandom = 0;
   private Array<SpriteDrawable> blueDigits = new Array<SpriteDrawable>();
     private Array<SpriteDrawable> redDigits = new Array<SpriteDrawable>();
@@ -90,17 +91,20 @@ public class MainMenuScreen implements Screen {
         im5 = new Image(redDigits.get(0));
         YourScore = new Image(new Texture(Gdx.files.internal("YourScoreis.png")));
         dot = new Image(new Texture(Gdx.files.internal("Point.png")));
-
+        sclabel = new Image(new Texture(Gdx.files.internal("Score.png")));
         im1.setPosition(stage.getWidth() * 0.1f,stage.getHeight() / 2);
-        im2.setPosition(stage.getWidth() * 0.25f,stage.getHeight() / 2);
-        im3.setPosition(stage.getWidth() * 0.55f,stage.getHeight() / 2);
-        im4.setPosition(stage.getWidth() * 0.65f,stage.getHeight() / 2);
-        im5.setPosition(stage.getWidth() * 0.7f,stage.getHeight() / 2);
+        im2.setPosition(stage.getWidth() * 0.2f,stage.getHeight() / 2);
+        im3.setPosition(stage.getWidth() * 0.35f,stage.getHeight() / 2);
+        im4.setPosition(stage.getWidth() * 0.45f,stage.getHeight() / 2);
+        im5.setPosition(stage.getWidth() * 0.55f,stage.getHeight() / 2);
+        sclabel.setPosition(stage.getWidth() * 0.65f,stage.getHeight() / 2 - 50);
         stage.addActor(im1);
         stage.addActor(im2);
         stage.addActor(im3);
         stage.addActor(im4);
         stage.addActor(im5);
+        sclabel.setScale(2);
+        stage.addActor(sclabel);
 
       YourScore.setPosition(200, stage.getHeight() - 300);
         YourScore.setScale(2);
@@ -220,7 +224,7 @@ public class MainMenuScreen implements Screen {
             return 4;
         } else if (duration < 3.0f) {
             return 3;
-        } else if (duration < 4.8f) {
+        } else if (duration < 3.8f) {
             return 2;
         } else {
             return 1;
