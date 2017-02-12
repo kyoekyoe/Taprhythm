@@ -1,33 +1,35 @@
 package com.testa3d.taprhythm;
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 
 /**
  * Created by Test A 3D on 2017/01/29.
  */
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Random;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
-
 
 public class MainMenuScreen implements Screen {
 
@@ -42,14 +44,12 @@ public class MainMenuScreen implements Screen {
             font.draw(batch, text, getX(), getY());
         }
     }
-    private ScoreText scoreText;
-    private ScoreText dot;
-    private float score;
-    private String one = "0";
-    private String two = "0";
-    private String three = "0";
-    private String four = "0";
-    private String five = "0";
+   private float score;
+    private int one = 0;
+    private int two = 0;
+    private int three = 0;
+    private int four = 0;
+    private int five = 0;
     OrthographicCamera camera;
     private double dtokuten;
     private String escore;
@@ -59,18 +59,38 @@ public class MainMenuScreen implements Screen {
     private Image im3;
     private Image im4;
     private Image im5;
+    private Image YourScore;
+    private Image dot;
     private Sound roll;
-    int onrandom = 0;
+  //  int onrandom = 0;
+  private Array<SpriteDrawable> blueDigits = new Array<SpriteDrawable>();
+    private Array<SpriteDrawable> redDigits = new Array<SpriteDrawable>();
+
     Random rnd = new Random();
+    private Boolean isRollPlaying = false;
+    private float currentTime = 0;
+    private int lastOnRandom = -1;
     public MainMenuScreen(final taprhythm game) {
+    //    roll = Gdx.audio.newSound(Gdx.files.internal("roll.ogg"));//ロールの音色定義
+      //roll.play();
+
         this.game = game;
         escore ="";
         stage = new Stage(new FitViewport(1920,1080));  //ステージ作成処理
-        im1 = new Image(new Texture(Gdx.files.internal("blue"+one+".png")));
-        im2 = new Image(new Texture(Gdx.files.internal("blue"+two+".png")));
-        im3 = new Image(new Texture(Gdx.files.internal("red"+three+".png")));
-        im4 = new Image(new Texture(Gdx.files.internal("red"+four+".png")));
-        im5 = new Image(new Texture(Gdx.files.internal("red"+five+".png")));
+        for (int i = 0; i < 10; i++) {
+            blueDigits.add(new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("blue"+i+".png")))));
+        }
+        for (int i = 0; i < 10; i++) {
+            redDigits.add(new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("red"+i+".png")))));
+        }
+        im1 = new Image(blueDigits.get(0));
+        im2 = new Image(blueDigits.get(0));
+        im3 = new Image(redDigits.get(0));
+        im4 = new Image(redDigits.get(0));
+        im5 = new Image(redDigits.get(0));
+        YourScore = new Image(new Texture(Gdx.files.internal("YourScoreis.png")));
+        dot = new Image(new Texture(Gdx.files.internal("Point.png")));
+
         im1.setPosition(stage.getWidth() * 0.1f,stage.getHeight() / 2);
         im2.setPosition(stage.getWidth() * 0.25f,stage.getHeight() / 2);
         im3.setPosition(stage.getWidth() * 0.55f,stage.getHeight() / 2);
@@ -81,14 +101,13 @@ public class MainMenuScreen implements Screen {
         stage.addActor(im3);
         stage.addActor(im4);
         stage.addActor(im5);
-        scoreText = new ScoreText();
-        scoreText.text = "Your Score is ...";
-        scoreText.setPosition(150, stage.getHeight() - 40);
-        stage.addActor(scoreText);
-        dot = new ScoreText();
-        dot.text = ".";
+
+      YourScore.setPosition(200, stage.getHeight() - 300);
+        YourScore.setScale(2);
+        stage.addActor(YourScore);
         dot.setPosition(stage.getWidth() * 0.31f,stage.getHeight() / 2+42);
         stage.addActor(dot);
+        roll = Gdx.audio.newSound(Gdx.files.internal("roll.mp3"));//ロールの音色定義
     }
     public void settokuten(){
 
@@ -97,71 +116,72 @@ public class MainMenuScreen implements Screen {
         escore = escore.replace(".", "");
 
         Gdx.app.log("TapRhythm:MainMenuScore",escore);
-        one = escore.substring(0,1);
-        two = escore.substring(1,2);
-        three = escore.substring(2,3);
-        four = escore.substring(3,4);
-        five = escore.substring(4,5);
-        Gdx.app.log("TapRhythm:one",one);
-        Gdx.app.log("TapRhythm:two",two);
-        Gdx.app.log("TapRhythm:three",three);
-        Gdx.app.log("TapRhythm:four",four);
-        Gdx.app.log("TapRhythm:five",five);
+        one = Integer.valueOf(escore.substring(0,1));
+        two = Integer.valueOf(escore.substring(1,2));
+        three = Integer.valueOf(escore.substring(2,3));
+        four = Integer.valueOf(escore.substring(3,4));
+        five = Integer.valueOf(escore.substring(4,5));
+        Gdx.app.log("TapRhythm:one","" + one);
+        Gdx.app.log("TapRhythm:two","" + two);
+        Gdx.app.log("TapRhythm:three","" + three);
+        Gdx.app.log("TapRhythm:four","" + four);
+        Gdx.app.log("TapRhythm:five","" + five);
     }
 
     @Override//
     public void render(float delta) {
+        currentTime += delta;
+        //Gdx.app.log("debug", "" + currentTime);
+
         Gdx.gl.glClearColor(255 / 255.f, 255 / 255.f, 255 / 255.f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        if(onrandom == 5){
-            one = String.valueOf(rnd.nextInt(10));
-            two = String.valueOf(rnd.nextInt(10));
-            three = String.valueOf(rnd.nextInt(10));
-            four = String.valueOf(rnd.nextInt(10));
-              five = String.valueOf(rnd.nextInt(10));
+        if (!isRollPlaying) {
+            // 音の読み込みが完了しておらず、正常に再生出来ない可能性がある(その場合、play()の戻り値が-1)ので、
+            // 正常に再生できたかチェックする
+            if (roll.play() != -1) {
+              //  roll.play();
+                isRollPlaying = true;
+            }
         }
-        if(onrandom == 4){
-            one = String.valueOf(rnd.nextInt(10));
-            two = String.valueOf(rnd.nextInt(10));
-            three = String.valueOf(rnd.nextInt(10));
-            four = String.valueOf(rnd.nextInt(10));
-          //  five = String.valueOf(rnd.nextInt(10));
+        int onrandom = getPhase(currentTime);
+        // 前回からフェーズが変わったら、一旦得点を表示し直す
+        if (lastOnRandom != onrandom) {
+            settokuten();
+            lastOnRandom = onrandom;
+        }
+        if(onrandom == 5){
+            one = rnd.nextInt(9);
+            two = rnd.nextInt(9);
+            three = rnd.nextInt(9);
+            four = rnd.nextInt(9);
+            five = rnd.nextInt(9);
+        }
+        if(onrandom == 4) {
+            one = rnd.nextInt(9);
+            two = rnd.nextInt(9);
+            three = rnd.nextInt(9);
+            four = rnd.nextInt(9);
+            //five = rnd.nextInt(9);
         }
         if(onrandom == 3){
-            one = String.valueOf(rnd.nextInt(10));
-            two = String.valueOf(rnd.nextInt(10));
-            three = String.valueOf(rnd.nextInt(10));
-           // four = String.valueOf(rnd.nextInt(10));
-            //  five = String.valueOf(rnd.nextInt(10));
+            one = rnd.nextInt(9);
+            two = rnd.nextInt(9);
+            three = rnd.nextInt(9);
+            //four = rnd.nextInt(9);
+            //five = rnd.nextInt(9);
         }
         if(onrandom == 2){
-            one = String.valueOf(rnd.nextInt(10));
-            two = String.valueOf(rnd.nextInt(10));
-           // three = String.valueOf(rnd.nextInt(10));
-           // four = String.valueOf(rnd.nextInt(10));
-            //  five = String.valueOf(rnd.nextInt(10));
+            one = rnd.nextInt(9);
+            two = rnd.nextInt(9);
+            //three = rnd.nextInt(9);
+            //four = rnd.nextInt(9);
+            //five = rnd.nextInt(9);
         }
-
-        im1.remove();
-        im2.remove();
-        im3.remove();
-        im4.remove();
-        im5.remove();
-        im1 = new Image(new Texture(Gdx.files.internal("blue"+one+".png")));
-        im2 = new Image(new Texture(Gdx.files.internal("blue"+two+".png")));
-        im3 = new Image(new Texture(Gdx.files.internal("red"+three+".png")));
-        im4 = new Image(new Texture(Gdx.files.internal("red"+four+".png")));
-        im5 = new Image(new Texture(Gdx.files.internal("red"+five+".png")));
-        im1.setPosition(stage.getWidth() * 0.1f,stage.getHeight() / 2);
-        im2.setPosition(stage.getWidth() * 0.2f,stage.getHeight() / 2);
-        im3.setPosition(stage.getWidth() * 0.35f,stage.getHeight() / 2);
-        im4.setPosition(stage.getWidth() * 0.45f,stage.getHeight() / 2);
-        im5.setPosition(stage.getWidth() * 0.55f,stage.getHeight() / 2);
-        stage.addActor(im1);
-        stage.addActor(im2);
-        stage.addActor(im3);
-        stage.addActor(im4);
-        stage.addActor(im5);
+        im1.setDrawable(blueDigits.get(one));
+        im2.setDrawable(blueDigits.get(two));
+        im3.setDrawable(redDigits.get(three));
+        im4.setDrawable(redDigits.get(four));
+        im5.setDrawable(redDigits.get(five));
         stage.act(Gdx.graphics.getDeltaTime());     // ステージの状態を前回render呼び出しからの経過時間(delta time)分だけ更新する
         stage.draw();
     }
@@ -185,45 +205,27 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void show() {
-        roll = Gdx.audio.newSound(Gdx.files.internal("roll.ogg"));//ロールの音色定義
+
 
         dtokuten = score;
-        onrandom = 5;
-        roll.play();
-   stage.addAction(randomend);
+
 
     }
-    private final Action randomend = sequence(
-            delay(2),
-            run(new Runnable() {
-                @Override
-                public void run() {
-                    onrandom = 4;
-                    settokuten();
-                }
-                }),
-            delay(0.5f),
-            run(new Runnable() {
-                @Override
-                public void run() {
-                    onrandom = 3;
-                    settokuten();
-                }
-            }),            delay(0.5f),
-            run(new Runnable() {
-                @Override
-                public void run() {
-                    onrandom = 2;
-                    settokuten();
-                }
-            }),     delay(1.8f),
-            run(new Runnable() {
-                @Override
-                public void run() {
-                    onrandom = 1;
-                    settokuten();
-                }
-            }));
+
+    // 経過時間に対して、スコアの表示フェーズを返す
+    private int getPhase(float duration) {
+        if (duration < 2) {
+            return 5;
+        } else if (duration < 2.5f) {
+            return 4;
+        } else if (duration < 3.0f) {
+            return 3;
+        } else if (duration < 4.8f) {
+            return 2;
+        } else {
+            return 1;
+        }
+    }
     @Override
     public void hide() {
 
