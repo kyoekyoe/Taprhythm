@@ -64,7 +64,7 @@ public class GameScreen implements Screen {
     private Image snare;
     private Image playbutton;
     private Image table;
-
+    private boolean isFinished = false;
     private  Long starttime;//（タップ時刻計算用の基準時刻）録音をスタートしてから2000ms(メトロ4拍分)経過した時刻
     private  Long playstarttime;//（モニタ用に追加）お手本再生をスタートした時刻
     //現在の時刻　－　starttime または playstarttime で　拍数がわかる
@@ -238,8 +238,8 @@ public class GameScreen implements Screen {
         stage = new Stage(new FitViewport(1920,1080));  //ステージ作成処理
         Gdx.input.setInputProcessor(stage);//ステージのリスナー作成
         snare = new Image(new Texture(Gdx.files.internal("drums.png")));//スネアの画像定義
-        playbutton = new Image(new Texture(Gdx.files.internal("play.png")));//再生ボタンの画像定義
-        recbutton = new Image(new Texture(Gdx.files.internal("rex.png")));
+        playbutton = new Image(new Texture(Gdx.files.internal("Listen.png")));//再生ボタンの画像定義
+        recbutton = new Image(new Texture(Gdx.files.internal("Start.png")));
         snaresound = Gdx.audio.newSound(Gdx.files.internal("snare.wav"));//スネアの音色定義
         metorotin  = Gdx.audio.newSound(Gdx.files.internal("Metronome-tin.wav"));//メトロノームの音色定義
         metoroka   = Gdx.audio.newSound(Gdx.files.internal("Metronome-ka.wav"));//メトロノームの音色定義
@@ -252,15 +252,15 @@ public class GameScreen implements Screen {
         muon.setLooping(true);
         // 太鼓を中心の位置に配置
         snare.setOrigin(snare.getWidth()/2,snare.getHeight()/2);
-        snare.setScale(3);
+        snare.setScale(2.5f);
         snare.setPosition(stage.getWidth() / 2 - snare.getWidth() /2 ,stage.getHeight() / 4 * 3 - snare.getHeight() * 0.5f);
         stage.addActor(snare);  // 太鼓をステージに追加する
         playbutton.setPosition(stage.getWidth() * 0.15f - playbutton.getWidth() * 0.5f ,stage.getHeight() / 4 * 3 - playbutton.getHeight() * 0.5f);
-        playbutton.setScale(1.2f);
+        playbutton.setScale(2);
         playbutton.setOrigin(playbutton.getWidth() / 2 , playbutton.getHeight() / 2);
         stage.addActor(playbutton);  //再生ボタンをステージに追加する
         recbutton.setPosition(stage.getWidth() * 0.15f * 5.5f- recbutton.getWidth() * 0.5f ,stage.getHeight() / 4 * 3 - recbutton.getHeight() * 0.5f);
-        recbutton.setScale(1.2f);
+        recbutton.setScale(2);
         recbutton.setOrigin(recbutton.getWidth() / 2 , recbutton.getHeight() / 2);
         stage.addActor(recbutton);
 
@@ -328,7 +328,7 @@ public class GameScreen implements Screen {
 				太鼓のタッチアップイベント。
 				・拡大処理
 				 */
-                snare.setScale(3);
+                snare.setScale(2.5f);
             }
         });
         recbutton.addListener(new InputListener() {
@@ -337,7 +337,7 @@ public class GameScreen implements Screen {
 				太鼓のタッチダウンイベント。
 				・縮小処理　・再生処理
 				 */
-                recbutton.setScale(1.5f);
+                recbutton.setScale(2.5f);
                 return true;
             }
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -513,10 +513,7 @@ public class GameScreen implements Screen {
 
 
                             Gdx.app.log("taprhythm:endscore",String.valueOf(scoreg));
-                            timer.cancel();
-                            MainMenuScreen screen = new MainMenuScreen(game);
-                            screen.setGscore(scoreg);
-                            game.setScreen(screen);
+                            isFinished = true;
                                   /*  scoreText.text = "あなたの得点は...";
                                     //wait
                                     scoreText.text = scoreText.text + String.valueOf(scoreg) + "点です.";*/
@@ -541,7 +538,7 @@ public class GameScreen implements Screen {
 
 
                 onrecord = true;
-                recbutton.setScale(1.2f);
+                recbutton.setScale(2);
             }
         });
         playbutton.addListener(new InputListener() {
@@ -551,7 +548,7 @@ public class GameScreen implements Screen {
 				・何もしない
 				 */
 
-                playbutton.setScale(1.5f);
+                playbutton.setScale(2.5f);
                 return true;
             }
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -660,7 +657,7 @@ public class GameScreen implements Screen {
                 } else {
 
                 }
-                playbutton.setScale(1.2f);
+                playbutton.setScale(2);
             }
             });
                 //Gdx.app.log("taprhythm",String.valueOf(ononeindex(musicdata)));
@@ -673,7 +670,13 @@ public class GameScreen implements Screen {
     @Override
     public void render (float delta) {
         // camera.update();
-
+        if (isFinished) {
+            Gdx.app.log("taprhythm:endscore",String.valueOf(scoreg));
+            timer.cancel();
+            MainMenuScreen screen = new MainMenuScreen(game);
+            screen.setGscore(scoreg);
+            game.setScreen(screen);
+        }
         Gdx.gl.glClearColor(255 / 255.f, 255 / 255.f, 255 / 255.f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         //   batch.setProjectionMatrix(camera.combined);
