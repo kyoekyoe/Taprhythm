@@ -275,8 +275,9 @@ public class GameScreen implements Screen {
         setumei1.setPosition((stage.getWidth() * 0.15f),stage.getHeight()* 0.45f + ((playbutton.getHeight()*3) /2 ));
         setumei1.setScale(2);
         stage.addActor(setumei1);
-        setumei2.setPosition(stage.getWidth() * 0.2f,stage.getHeight() * 0.45f - playbutton.getHeight() * 2 - 80 + recbutton.getHeight());
+        setumei2.setPosition((stage.getWidth() * 0.15f),stage.getHeight() * 0.45f - playbutton.getHeight() * 2 - 80 + snare.getHeight() + setumei2.getHeight() - 10);
         setumei2.setScale(2);
+        setumei2.setZIndex(1);
         stage.addActor(setumei2);
         muon.setLooping(true);
         logo.setPosition(0+(logo.getWidth() / 2),stage.getHeight() - logo.getHeight() - 90);
@@ -284,6 +285,7 @@ public class GameScreen implements Screen {
         logo.setScale(1.6f);
         stage.addActor(logo);
         // 太鼓を中心の位置に配置
+        snare.setZIndex(2);
         snare.setOrigin(snare.getWidth()/2,snare.getHeight()/2);
         snare.setScale(2.5f);
         snare.setPosition(stage.getWidth() * 0.65f,stage.getHeight() * 0.45f - playbutton.getHeight() * 2 - 80);
@@ -293,7 +295,7 @@ public class GameScreen implements Screen {
         playbutton.setOrigin(playbutton.getWidth() / 2 , playbutton.getHeight() / 2);
         stage.addActor(playbutton);  //再生ボタンをステージに追加する
         chq.setScale(2);
-        chq.setPosition(stage.getWidth()*0.15f,stage.getHeight() * 0.2f);
+        chq.setPosition(logo.getWidth() * 1.7f  + (logo.getWidth() / 2),stage.getHeight() - logo.getHeight());
         chq.setOrigin(chq.getWidth() / 2, chq.getHeight() / 2);
         stage.addActor(chq);
         recbutton.setPosition(stage.getWidth() * 0.2f,stage.getHeight() * 0.45f - playbutton.getHeight() * 2 - 80);
