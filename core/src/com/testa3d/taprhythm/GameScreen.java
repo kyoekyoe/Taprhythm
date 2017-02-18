@@ -266,6 +266,7 @@ public class GameScreen implements Screen {
         setumei1 = new Image(new Texture(Gdx.files.internal("Oboeyou.png")));
         chq = new Image(new Texture(Gdx.files.internal("ChangeQ.png")));
         logo = new Image(new Texture(Gdx.files.internal("TapRhythm.png")));
+        setumei2 = new Image(new Texture(Gdx.files.internal("Kiitatoorini.png")));
         //ここまで定義-------------------------------------------
 
 
@@ -274,6 +275,9 @@ public class GameScreen implements Screen {
         setumei1.setPosition((stage.getWidth() * 0.15f),stage.getHeight()* 0.45f + ((playbutton.getHeight()*3) /2 ));
         setumei1.setScale(2);
         stage.addActor(setumei1);
+        setumei2.setPosition(stage.getWidth() * 0.2f,stage.getHeight() * 0.45f - playbutton.getHeight() * 2 - 80 + recbutton.getHeight());
+        setumei2.setScale(2);
+        stage.addActor(setumei2);
         muon.setLooping(true);
         logo.setPosition(0+(logo.getWidth() / 2),stage.getHeight() - logo.getHeight() - 90);
         logo.setOrigin(logo.getWidth()/2,logo.getHeight()/2);
