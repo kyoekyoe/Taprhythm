@@ -62,7 +62,7 @@ public class GameScreen implements Screen {
     private Long FinishTime;
     private ScoreText scoreText;
     private Stage stage;
-
+    private int nowquestion = 1;
     //Randomクラスのインスタンス化
     private Image snare;
     private Image playbutton;
@@ -234,6 +234,18 @@ public class GameScreen implements Screen {
     }
     public GameScreen(final taprhythm game) {
         this.game = game;
+
+        if(nowquestion == 1){
+            musicdata = new ArrayList(musicdata1);
+        }else if(nowquestion == 2){
+            musicdata = new ArrayList(musicdata2);
+        }else if(nowquestion == 3){
+            musicdata = new ArrayList(musicdata3);
+        }else if(nowquestion == 4){
+            musicdata = new ArrayList(musicdata4);
+        }else if(nowquestion == 5){
+            musicdata = new ArrayList(musicdata5);
+        }
         musicdata = new ArrayList(musicdata1);
         // LibGDXのデフォルトフォント(Arial)を利用します
         // カメラを生成します
@@ -287,6 +299,7 @@ public class GameScreen implements Screen {
                 chq.setScale(2);
                 int ran = rnd.nextInt(5);
                 ran++;
+                nowquestion = ran;
                 if(ran == 1){
                     musicdata = new ArrayList(musicdata1);
                 }else if(ran == 2){
