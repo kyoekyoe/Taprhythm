@@ -17,14 +17,19 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
@@ -45,6 +50,7 @@ public class MainMenuScreen implements Screen {
         }
     }
    private float score;
+    private Image back;
     private int one = 0;
     private int two = 0;
     private int three = 0;
@@ -74,7 +80,6 @@ public class MainMenuScreen implements Screen {
     public MainMenuScreen(final taprhythm game) {
     //    roll = Gdx.audio.newSound(Gdx.files.internal("roll.ogg"));//ロールの音色定義
       //roll.play();
-
         this.game = game;
         escore ="";
         stage = new Stage(new FitViewport(1920,1080));  //ステージ作成処理
@@ -84,6 +89,8 @@ public class MainMenuScreen implements Screen {
         for (int i = 0; i < 10; i++) {
             redDigits.add(new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("red"+i+".png")))));
         }
+        Gdx.input.setInputProcessor(stage);//ステージのリスナー作成
+
         im1 = new Image(blueDigits.get(0));
         im2 = new Image(blueDigits.get(0));
         im3 = new Image(redDigits.get(0));
@@ -91,12 +98,17 @@ public class MainMenuScreen implements Screen {
         im5 = new Image(redDigits.get(0));
         YourScore = new Image(new Texture(Gdx.files.internal("YourScoreis.png")));
         dot = new Image(new Texture(Gdx.files.internal("Point.png")));
+        back = new Image(new Texture(Gdx.files.internal("Replay.png")));
         sclabel = new Image(new Texture(Gdx.files.internal("Score.png")));
         im1.setPosition(stage.getWidth() * 0.1f,stage.getHeight() / 2);
         im2.setPosition(stage.getWidth() * 0.2f,stage.getHeight() / 2);
         im3.setPosition(stage.getWidth() * 0.35f,stage.getHeight() / 2);
         im4.setPosition(stage.getWidth() * 0.45f,stage.getHeight() / 2);
         im5.setPosition(stage.getWidth() * 0.55f,stage.getHeight() / 2);
+        back.setPosition(stage.getWidth() * 0.1f,stage.getHeight() * 0.15f);
+        back.setScale(2);
+        back.setOrigin( back.getWidth() / 2 ,  back.getHeight() / 2);
+
         sclabel.setPosition(stage.getWidth() * 0.65f,stage.getHeight() / 2 - 50);
         stage.addActor(im1);
         stage.addActor(im2);
@@ -104,7 +116,8 @@ public class MainMenuScreen implements Screen {
         stage.addActor(im4);
         stage.addActor(im5);
         sclabel.setScale(2);
-        stage.addActor(sclabel);
+
+  //      stage.addActor(sclabel);
 
       YourScore.setPosition(200, stage.getHeight() - 300);
         YourScore.setScale(2);
@@ -112,6 +125,19 @@ public class MainMenuScreen implements Screen {
         dot.setPosition(stage.getWidth() * 0.31f,stage.getHeight() / 2+42);
         stage.addActor(dot);
         roll = Gdx.audio.newSound(Gdx.files.internal("roll.mp3"));//ロールの音色定義
+        stage.addActor(back);
+        back.addListener(new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                back.setScale(1.8f);
+                return true;
+            }
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                back.setScale(2);
+                GameScreen screen = new GameScreen(game);
+                game.setScreen(screen);
+            }
+        });
+
     }
     public void settokuten(){
 

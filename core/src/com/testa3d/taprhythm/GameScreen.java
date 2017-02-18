@@ -59,8 +59,11 @@ public class GameScreen implements Screen {
             font.draw(batch, text, getX(), getY());
         }
     }
+    private Long FinishTime;
     private ScoreText scoreText;
     private Stage stage;
+
+    //Randomクラスのインスタンス化
     private Image snare;
     private Image playbutton;
     private Image table;
@@ -205,11 +208,13 @@ public class GameScreen implements Screen {
     private Random rnd = new Random();
     private Sound snaresound;
     private Timer timer = new Timer();
-
+    private boolean onshow = true;
     private Sound metorotin;
     private Sound metoroka;
     private int soundcount;
     private Image recbutton;
+    private Image chq;
+    private Image logo;
     private boolean onrecord = false;
     private boolean onplay = false;
     private OrthographicCamera camera;
@@ -244,12 +249,18 @@ public class GameScreen implements Screen {
         metorotin  = Gdx.audio.newSound(Gdx.files.internal("Metronome-tin.wav"));//メトロノームの音色定義
         metoroka   = Gdx.audio.newSound(Gdx.files.internal("Metronome-ka.wav"));//メトロノームの音色定義
         muon = Gdx.audio.newMusic(Gdx.files.internal("muon.ogg"));
+        chq = new Image(new Texture(Gdx.files.internal("ChangeQ.png")));
+        logo = new Image(new Texture(Gdx.files.internal("TapRhythm.png")));
         //ここまで定義-------------------------------------------
 
 
         //問題生成-------------------------------------
         //問題生成終了---------------------------------
         muon.setLooping(true);
+        logo.setPosition(0+(logo.getWidth() / 2),stage.getHeight() - logo.getHeight() );
+        logo.setOrigin(logo.getWidth()/2,logo.getHeight()/2);
+        logo.setScale(1.6f);
+        stage.addActor(logo);
         // 太鼓を中心の位置に配置
         snare.setOrigin(snare.getWidth()/2,snare.getHeight()/2);
         snare.setScale(2.5f);
@@ -259,11 +270,37 @@ public class GameScreen implements Screen {
         playbutton.setScale(2);
         playbutton.setOrigin(playbutton.getWidth() / 2 , playbutton.getHeight() / 2);
         stage.addActor(playbutton);  //再生ボタンをステージに追加する
+        chq.setScale(2);
+        chq.setPosition(stage.getWidth()*0.15f,stage.getHeight() * 0.2f);
+        chq.setOrigin(chq.getWidth() / 2, chq.getHeight() / 2);
+        stage.addActor(chq);
         recbutton.setPosition(stage.getWidth() * 0.15f * 5.5f- recbutton.getWidth() * 0.5f ,stage.getHeight() / 4 * 3 - recbutton.getHeight() * 0.5f);
         recbutton.setScale(2);
         recbutton.setOrigin(recbutton.getWidth() / 2 , recbutton.getHeight() / 2);
         stage.addActor(recbutton);
+        chq.addListener(new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                chq.setScale(1.8f);
+                return true;
+            }
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                chq.setScale(2);
+                int ran = rnd.nextInt(5);
+                ran++;
+                if(ran == 1){
+                    musicdata = new ArrayList(musicdata1);
+                }else if(ran == 2){
+                    musicdata = new ArrayList(musicdata2);
+                }else if(ran == 3){
+                    musicdata = new ArrayList(musicdata3);
+                }else if(ran == 4){
+                    musicdata = new ArrayList(musicdata4);
+                }else if(ran == 5){
+                    musicdata = new ArrayList(musicdata5);
+                }
 
+            }
+        });
         snare.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				/*
@@ -514,6 +551,8 @@ public class GameScreen implements Screen {
 
                             Gdx.app.log("taprhythm:endscore",String.valueOf(scoreg));
                             isFinished = true;
+                            FinishTime =  TimeUtils.millis() + 500;
+
                                   /*  scoreText.text = "あなたの得点は...";
                                     //wait
                                     scoreText.text = scoreText.text + String.valueOf(scoreg) + "点です.";*/
@@ -532,13 +571,14 @@ public class GameScreen implements Screen {
                 //	Gdx.app.log("taprhythm:score0",String.valueOf(score));
                 //        Gdx.app.log("taprhythm",String.valueOf(starttime));
                 starttime = TimeUtils.millis() + 2000;  //4拍分イントロ(2000ms)オフセット
+                if (onrecord == false) {
+                    timer.scheduleAtFixedRate(metrorec, 250L, 250L);
 
-                timer.scheduleAtFixedRate(metrorec, 250L,250L);
 
-
-
-                onrecord = true;
+                    onrecord = true;
+                }
                 recbutton.setScale(2);
+
             }
         });
         playbutton.addListener(new InputListener() {
@@ -669,14 +709,18 @@ public class GameScreen implements Screen {
 
     @Override
     public void render (float delta) {
+        Long nowtime = TimeUtils.millis();
+
         // camera.update();
         if (isFinished) {
-            Gdx.app.log("taprhythm:endscore",String.valueOf(scoreg));
-            timer.cancel();
-            MainMenuScreen screen = new MainMenuScreen(game);
-            screen.setGscore(scoreg);
-            game.setScreen(screen);
-        }
+            if(FinishTime < nowtime){
+                Gdx.app.log("taprhythm:endscore",String.valueOf(scoreg));
+                timer.cancel();
+                MainMenuScreen screen = new MainMenuScreen(game);
+                screen.setGscore(scoreg);
+                game.setScreen(screen);
+            }        }
+
         Gdx.gl.glClearColor(255 / 255.f, 255 / 255.f, 255 / 255.f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         //   batch.setProjectionMatrix(camera.combined);
@@ -700,7 +744,7 @@ public class GameScreen implements Screen {
     }
     @Override
     public void show() {
-
+        onshow = true;
     }
     @Override
     public void pause() {
@@ -708,7 +752,7 @@ public class GameScreen implements Screen {
     }
     @Override
     public void hide() {
-
+        onshow = false;
     }
    @Override
    public void resize (int width, int height){
