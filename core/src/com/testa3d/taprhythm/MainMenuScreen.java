@@ -2,6 +2,7 @@ package com.testa3d.taprhythm;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 
 /**
@@ -51,6 +52,8 @@ public class MainMenuScreen implements Screen {
     }
    private float score;
     private Image back;
+    private Preferences prefs = Gdx.app.getPreferences("com.testa3d.taprhythm");
+    private Image exit;
     private int one = 0;
     private int two = 0;
     private int three = 0;
@@ -81,6 +84,12 @@ public class MainMenuScreen implements Screen {
     //    roll = Gdx.audio.newSound(Gdx.files.internal("roll.ogg"));//ロールの音色定義
       //roll.play();
         this.game = game;
+        float hiscore = prefs.getFloat("hiscore",0.000f);
+        if(hiscore == 0.000f){
+            prefs.putFloat("hiscore",0.000f);
+            prefs.flush();
+        }
+        exit = new Image(new Texture(Gdx.files.internal("Exit.png")));
         escore ="";
         stage = new Stage(new FitViewport(1920,1080));  //ステージ作成処理
         for (int i = 0; i < 10; i++) {
@@ -90,7 +99,20 @@ public class MainMenuScreen implements Screen {
             redDigits.add(new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("red"+i+".png")))));
         }
         Gdx.input.setInputProcessor(stage);//ステージのリスナー作成
-
+        exit.setPosition(stage.getWidth() * 0.5f,stage.getHeight() * 0.15f);
+        exit.setScale(1.55f);
+        exit.setOrigin(exit.getWidth()/2,exit.getHeight()/2);
+        stage.addActor(exit);
+        exit.addListener(new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                exit.setScale(1.3f);
+                return true;
+            }
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                exit.setScale(1.55f);
+                Gdx.app.exit();
+            }
+        });
         im1 = new Image(blueDigits.get(0));
         im2 = new Image(blueDigits.get(0));
         im3 = new Image(redDigits.get(0));

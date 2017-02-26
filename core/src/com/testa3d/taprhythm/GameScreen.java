@@ -1,5 +1,6 @@
 package com.testa3d.taprhythm;
 
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 
 /**
@@ -21,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -61,6 +63,7 @@ public class GameScreen implements Screen {
     }
     private Long FinishTime;
     private ScoreText scoreText;
+    private boolean oboeta = false;
     private Stage stage;
     private int nowquestion = 1;
     //Randomクラスのインスタンス化
@@ -76,7 +79,7 @@ public class GameScreen implements Screen {
     private List<Integer> otehon = new ArrayList<Integer>();
     private List<Integer> minposi = new ArrayList<Integer>();
     private Music muon;
-    private float k = 0.0001f; //減点係数/*//TODO:　数字が大きいほど、減点が大きくなり点数が下がる*/
+    private float k = 0.0003f; //減点係数/*//TODO:　数字が大きいほど、減点が大きくなり点数が下がる*/
     //Music -- Data
     private List<Integer> musicdata;/* = new ArrayList<Integer>(){
         {
@@ -209,6 +212,8 @@ public class GameScreen implements Screen {
     private Sound snaresound;
     private Image setumei1;
     private Image setumei2;
+    private Image oboetabutton;
+    private Image exit;
     private Timer timer = new Timer();
     private boolean onshow = true;
     private Sound metorotin;
@@ -267,6 +272,7 @@ public class GameScreen implements Screen {
         chq = new Image(new Texture(Gdx.files.internal("ChangeQ.png")));
         logo = new Image(new Texture(Gdx.files.internal("TapRhythm.png")));
         setumei2 = new Image(new Texture(Gdx.files.internal("Kiitatoorini.png")));
+        exit = new Image(new Texture(Gdx.files.internal("Exit.png")));
         //ここまで定義-------------------------------------------
 
 
@@ -279,10 +285,14 @@ public class GameScreen implements Screen {
         setumei2.setScale(2);
         setumei2.setZIndex(1);
         stage.addActor(setumei2);
+        exit.setPosition(logo.getWidth() * 1.7f  + (logo.getWidth() / 2) + chq.getWidth() *1.8f,stage.getHeight() - logo.getHeight());
+        exit.setScale(1.55f);
+        exit.setOrigin(exit.getWidth()/2,exit.getHeight()/2);
+        stage.addActor(exit);
         muon.setLooping(true);
         logo.setPosition(0+(logo.getWidth() / 2),stage.getHeight() - logo.getHeight() - 90);
         logo.setOrigin(logo.getWidth()/2,logo.getHeight()/2);
-        logo.setScale(1.6f);
+        logo.setScale(2);
         stage.addActor(logo);
         // 太鼓を中心の位置に配置
         snare.setZIndex(2);
@@ -326,6 +336,16 @@ public class GameScreen implements Screen {
 
             }
         });
+        exit.addListener(new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                exit.setScale(1.3f);
+                return true;
+            }
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                exit.setScale(1.55f);
+                Gdx.app.exit();
+            }
+        });
         snare.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				/*
@@ -333,9 +353,9 @@ public class GameScreen implements Screen {
 				・縮小処理　・再生処理
 				 */
                 snare.setScale(2.65f);
-
-                snaresound.play();
-                if(onrecord == true){
+                if(!onplay && oboeta) {
+                    snaresound.play();
+                    if (onrecord == true) {
 						/*taplist.add(TimeUtils.millis() - starttime);
 						Gdx.app.log("TAPRHYTHM",String.valueOf( TimeUtils.millis()-starttime));
 						long nowtime = TimeUtils.millis()-starttime;
@@ -347,25 +367,25 @@ public class GameScreen implements Screen {
 						}
 						Gdx.app.log("taprhythm",String.valueOf(nowtime - saisyou));
 						diffrencelist.add(nowtime - saisyou);*/
-                    //-----------------------------------------------------------------------
-                    //今の時間
-                    Long nowtime = TimeUtils.millis()-starttime-200;	//タッチパネル反応遅れ200msオフセットさせる
-                    List<Integer> diftmp = new ArrayList<Integer>(otehon.size());
-                    Integer minpostison = 0;
-                    taplist.add(nowtime);
-                    for(int i = 0; i < otehon.size();i++){
-                        diftmp.add(Math.abs(otehon.get(i) - Integer.valueOf(nowtime.toString())));
-                        Gdx.app.log("taprhythm:otehon",otehon.get(i).toString());
-                    }
-                    Gdx.app.log("taprhythm:nowtime",nowtime.toString());
-                    Gdx.app.log("taprhythm:diftmp",diftmp.toString());
-                    Integer saisyou = diftmp.get(0);
-                    for (int index = 1; index < diftmp.size();index++){
-                        if(saisyou > diftmp.get(index)){
-                            saisyou = diftmp.get(index);
-                            minpostison = index;
+                        //-----------------------------------------------------------------------
+                        //今の時間
+                        Long nowtime = TimeUtils.millis() - starttime - 200;    //タッチパネル反応遅れ200msオフセットさせる
+                        List<Integer> diftmp = new ArrayList<Integer>(otehon.size());
+                        Integer minpostison = 0;
+                        taplist.add(nowtime);
+                        for (int i = 0; i < otehon.size(); i++) {
+                            diftmp.add(Math.abs(otehon.get(i) - Integer.valueOf(nowtime.toString())));
+                            Gdx.app.log("taprhythm:otehon", otehon.get(i).toString());
                         }
-                    }
+                        Gdx.app.log("taprhythm:nowtime", nowtime.toString());
+                        Gdx.app.log("taprhythm:diftmp", diftmp.toString());
+                        Integer saisyou = diftmp.get(0);
+                        for (int index = 1; index < diftmp.size(); index++) {
+                            if (saisyou > diftmp.get(index)) {
+                                saisyou = diftmp.get(index);
+                                minpostison = index;
+                            }
+                        }
 						/*
 						for(int index = 0; index < diftmp.size() -1;index++){
 							if(diftmp.get(index) < diftmp.get(index+1)){
@@ -379,9 +399,10 @@ public class GameScreen implements Screen {
 							}
 						}*/
 
-                    Gdx.app.log("taprhythm:taplist",String.valueOf(taplist.size()));
-                    diffrencelist.add(Long.valueOf(saisyou.toString()));
-                    minposi.add(Integer.valueOf(minpostison.toString()));
+                        Gdx.app.log("taprhythm:taplist", String.valueOf(taplist.size()));
+                        diffrencelist.add(Long.valueOf(saisyou.toString()));
+                        minposi.add(Integer.valueOf(minpostison.toString()));
+                    }
                 }
                 return true;
             }
@@ -596,7 +617,7 @@ public class GameScreen implements Screen {
                 //	Gdx.app.log("taprhythm:score0",String.valueOf(score));
                 //        Gdx.app.log("taprhythm",String.valueOf(starttime));
                 starttime = TimeUtils.millis() + 2000;  //4拍分イントロ(2000ms)オフセット
-                if (onrecord == false) {
+                if (!onrecord && oboeta) {
                     timer.scheduleAtFixedRate(metrorec, 250L, 250L);
 
 
@@ -693,7 +714,21 @@ public class GameScreen implements Screen {
                     TimerTask timerTask = new TimerTask() {
 
                         int cnt = 0;
+              /*      Action snarescale = sequence(
+                            Actions.run(new Runnable() {
+                                @Override
+                                public void run() {
+                                snare.setScale(2.65f);
+                                }
+                            }),delay(0.1f),
+                            Actions.run(new Runnable() {
+                                @Override
+                                public void run() {
+                                    snare.setScale(2.5f);
+                                }
+                            })
 
+                    );*/
                         public void run() {
                             if (cnt < 24) {
                                 if (cnt % 8 == 0) {
@@ -704,7 +739,9 @@ public class GameScreen implements Screen {
                                 }
                                 if (cnt > 7) {
                                     if (musicdata.get(cnt - 8) == 1) {
+                                      //  stage.addAction(snarescale);
                                         snaresound.play();
+
                                     }
                                 }
                                 soundcount++;
