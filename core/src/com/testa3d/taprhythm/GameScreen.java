@@ -353,7 +353,7 @@ public class GameScreen implements Screen {
 				・縮小処理　・再生処理
 				 */
                 snare.setScale(2.65f);
-                if(!onplay && oboeta) {
+               // if (!onplay && oboeta) {
                     snaresound.play();
                     if (onrecord == true) {
 						/*taplist.add(TimeUtils.millis() - starttime);
@@ -403,7 +403,7 @@ public class GameScreen implements Screen {
                         diffrencelist.add(Long.valueOf(saisyou.toString()));
                         minposi.add(Integer.valueOf(minpostison.toString()));
                     }
-                }
+                //}
                 return true;
             }
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -617,12 +617,12 @@ public class GameScreen implements Screen {
                 //	Gdx.app.log("taprhythm:score0",String.valueOf(score));
                 //        Gdx.app.log("taprhythm",String.valueOf(starttime));
                 starttime = TimeUtils.millis() + 2000;  //4拍分イントロ(2000ms)オフセット
-                if (!onrecord && oboeta) {
+        //        if (!onrecord && oboeta) { //覚えたボタン対応
                     timer.scheduleAtFixedRate(metrorec, 250L, 250L);
 
 
                     onrecord = true;
-                }
+              //  }
                 recbutton.setScale(2);
 
             }
