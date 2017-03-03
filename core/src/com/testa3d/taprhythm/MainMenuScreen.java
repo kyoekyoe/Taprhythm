@@ -156,7 +156,9 @@ public class MainMenuScreen implements Screen {
   //      stage.addActor(sclabel);
 
       YourScore.setPosition(200, stage.getHeight() - 300);
-        bestscore.setPosition(200, stage.getHeight() - 300);
+        bestscore.setPosition(200, /*stage.getHeight() - 300 - */stage.getHeight()*0.25f);
+        bestscore.setScale(2);
+        stage.addActor(bestscore);
         YourScore.setScale(2);
         stage.addActor(YourScore);
         dot.setPosition(stage.getWidth() * 0.31f,stage.getHeight() / 2+42);
