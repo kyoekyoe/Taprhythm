@@ -71,6 +71,8 @@ public class MainMenuScreen implements Screen {
     private Image im4;
     private Image im5;
     private Image YourScore;
+    private Image bestscore;
+
     private Image dot;
     private Sound roll;
     private Image sclabel;
@@ -99,8 +101,7 @@ public class MainMenuScreen implements Screen {
             prefs.putFloat("hiscore",hiscore);
         }
         //-----------------ハイスコア計算
-
-
+        bestscore = new Image(new Texture(Gdx.files.internal("BestScore.png")));
         exit = new Image(new Texture(Gdx.files.internal("Exit.png")));
         escore ="";
         stage = new Stage(new FitViewport(1920,1080));  //ステージ作成処理
@@ -132,6 +133,7 @@ public class MainMenuScreen implements Screen {
         im5 = new Image(redDigits.get(0));
         YourScore = new Image(new Texture(Gdx.files.internal("YourScoreis.png")));
         dot = new Image(new Texture(Gdx.files.internal("Point.png")));
+        bestscore = new Image(new Texture(Gdx.files.internal("BestScore.png")));
         back = new Image(new Texture(Gdx.files.internal("Replay.png")));
         sclabel = new Image(new Texture(Gdx.files.internal("Score.png")));
         im1.setPosition(stage.getWidth() * 0.1f,stage.getHeight() / 2);
@@ -154,6 +156,7 @@ public class MainMenuScreen implements Screen {
   //      stage.addActor(sclabel);
 
       YourScore.setPosition(200, stage.getHeight() - 300);
+        bestscore.setPosition(200, stage.getHeight() - 300);
         YourScore.setScale(2);
         stage.addActor(YourScore);
         dot.setPosition(stage.getWidth() * 0.31f,stage.getHeight() / 2+42);
