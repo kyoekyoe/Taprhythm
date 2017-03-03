@@ -52,6 +52,8 @@ public class MainMenuScreen implements Screen {
     }
    private float score;
     private Image back;
+    private float backhiscore;
+    private float hiscore;
     private Preferences prefs = Gdx.app.getPreferences("com.testa3d.taprhythm");
     private Image exit;
     private int one = 0;
@@ -84,11 +86,21 @@ public class MainMenuScreen implements Screen {
     //    roll = Gdx.audio.newSound(Gdx.files.internal("roll.ogg"));//ロールの音色定義
       //roll.play();
         this.game = game;
+        //-----------------ハイスコア計算
         float hiscore = prefs.getFloat("hiscore",0.000f);
         if(hiscore == 0.000f){
             prefs.putFloat("hiscore",0.000f);
             prefs.flush();
         }
+        backhiscore = prefs.getFloat("hiscore");
+        hiscore = backhiscore;
+        if(score > hiscore){
+            hiscore = score;
+            prefs.putFloat("hiscore",hiscore);
+        }
+        //-----------------ハイスコア計算
+
+
         exit = new Image(new Texture(Gdx.files.internal("Exit.png")));
         escore ="";
         stage = new Stage(new FitViewport(1920,1080));  //ステージ作成処理
