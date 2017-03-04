@@ -70,6 +70,7 @@ public class MainMenuScreen implements Screen {
     private Image im3;
     private Image im4;
     private Image im5;
+    private ScoreText hiscoretext;
     private Image YourScore;
     private Image bestscore;
 
@@ -89,17 +90,21 @@ public class MainMenuScreen implements Screen {
       //roll.play();
         this.game = game;
         //-----------------ハイスコア計算
-        float hiscore = prefs.getFloat("hiscore",0.000f);
-        if(hiscore == 0.000f){
+        /*float hiscoress = prefs.getFloat("hiscore",0.000f);
+        if(hiscoress == 0.000f){
             prefs.putFloat("hiscore",0.000f);
             prefs.flush();
-        }
+        }*/
         backhiscore = prefs.getFloat("hiscore");
+        prefs.flush();
         hiscore = backhiscore;
         if(score > hiscore){
             hiscore = score;
-            prefs.putFloat("hiscore",hiscore);
+            prefs.putFloat("hiscore",score);
+            prefs.flush();
         }
+
+
         //-----------------ハイスコア計算
         bestscore = new Image(new Texture(Gdx.files.internal("BestScore.png")));
         exit = new Image(new Texture(Gdx.files.internal("Exit.png")));
@@ -176,7 +181,10 @@ public class MainMenuScreen implements Screen {
                 game.setScreen(screen);
             }
         });
-
+        hiscoretext = new ScoreText();
+        hiscoretext.text =hiscore + "点";
+        hiscoretext.setPosition(200 + bestscore.getWidth() + 10, /*stage.getHeight() - 300 - */stage.getHeight()*0.25f);
+        stage.addActor(hiscoretext);
     }
     public void settokuten(){
 
