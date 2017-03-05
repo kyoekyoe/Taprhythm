@@ -90,7 +90,7 @@ public class MainMenuScreen implements Screen {
       //roll.play();
         this.game = game;
         //-----------------ハイスコア計算
-        float hiscoress = prefs.getFloat("hiscore",120);
+     /*   float hiscoress = prefs.getFloat("hiscore",120);
         if(hiscoress == 120){
             prefs.putFloat("hiscore",0.000f);
             prefs.flush();
@@ -106,7 +106,7 @@ public class MainMenuScreen implements Screen {
             prefs.flush();
         }
 
-
+*/
         //-----------------ハイスコア計算
         bestscore = new Image(new Texture(Gdx.files.internal("BestScore.png")));
         exit = new Image(new Texture(Gdx.files.internal("Exit.png")));
@@ -183,10 +183,7 @@ public class MainMenuScreen implements Screen {
                 game.setScreen(screen);
             }
         });
-        hiscoretext = new ScoreText();
-        hiscoretext.text =hiscore + "点";
-        hiscoretext.setPosition(bestscore.getX(), bestscore.getY());
-        stage.addActor(hiscoretext);
+
     }
     public void settokuten(){
 
@@ -256,6 +253,9 @@ public class MainMenuScreen implements Screen {
             //four = rnd.nextInt(9);
             //five = rnd.nextInt(9);
         }
+        if(onrandom < 2){
+            hiscoretext.text =hiscore + "点";
+        }
         im1.setDrawable(blueDigits.get(one));
         im2.setDrawable(blueDigits.get(two));
         im3.setDrawable(redDigits.get(three));
@@ -287,8 +287,25 @@ public class MainMenuScreen implements Screen {
 
 
         dtokuten = score;
+        float hiscoress = prefs.getFloat("hiscore",120);
+        //if(hiscoress == 120){
+            prefs.putFloat("hiscore",0.000f);
+            prefs.flush();
+     //   }
 
+        backhiscore = prefs.getFloat("hiscore");
+        prefs.flush();
+        hiscore = backhiscore;
+        if(score > hiscore){
 
+            hiscore = score;
+            prefs.putFloat("hiscore",score);
+            prefs.flush();
+        }
+        hiscoretext = new ScoreText();
+        hiscoretext.text =backhiscore + "点";
+        hiscoretext.setPosition(bestscore.getX(), bestscore.getY());
+        stage.addActor(hiscoretext);
     }
 
     // 経過時間に対して、スコアの表示フェーズを返す
