@@ -253,7 +253,9 @@ public class GameScreen implements Screen {
         }else if(nowquestion == 5){
             musicdata = new ArrayList(musicdata5);
         }
-        musicdata = new ArrayList(musicdata1);
+        otehon = ononeindex(musicdata);
+
+        // musicdata = new ArrayList(musicdata1);
         // LibGDXのデフォルトフォント(Arial)を利用します
         // カメラを生成します
         camera = new OrthographicCamera();
@@ -333,7 +335,7 @@ public class GameScreen implements Screen {
                 }else if(ran == 5){
                     musicdata = new ArrayList(musicdata5);
                 }
-
+                otehon = ononeindex(musicdata);
             }
         });
         exit.addListener(new InputListener() {
