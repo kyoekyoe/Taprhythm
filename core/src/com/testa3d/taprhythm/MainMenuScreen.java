@@ -90,17 +90,19 @@ public class MainMenuScreen implements Screen {
       //roll.play();
         this.game = game;
         //-----------------ハイスコア計算
-        /*float hiscoress = prefs.getFloat("hiscore",0.000f);
-        if(hiscoress == 0.000f){
+        float hiscoress = prefs.getFloat("hiscore",120);
+        if(hiscoress == 120){
             prefs.putFloat("hiscore",0.000f);
             prefs.flush();
-        }*/
+        }
+
         backhiscore = prefs.getFloat("hiscore");
         prefs.flush();
         hiscore = backhiscore;
-        if(score > hiscore){
-            hiscore = score;
-            prefs.putFloat("hiscore",score);
+        if(dtokuten > hiscore){
+
+            hiscore = (float)dtokuten;
+            prefs.putFloat("hiscore",(float)dtokuten);
             prefs.flush();
         }
 
@@ -117,7 +119,7 @@ public class MainMenuScreen implements Screen {
             redDigits.add(new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("red"+i+".png")))));
         }
         Gdx.input.setInputProcessor(stage);//ステージのリスナー作成
-        exit.setPosition(stage.getWidth() * 0.5f,stage.getHeight() * 0.15f);
+        exit.setPosition(stage.getWidth() * 0.8f,stage.getHeight() * 0.15f);
         exit.setScale(1.55f);
         exit.setOrigin(exit.getWidth()/2,exit.getHeight()/2);
         stage.addActor(exit);
@@ -146,7 +148,7 @@ public class MainMenuScreen implements Screen {
         im3.setPosition(stage.getWidth() * 0.35f,stage.getHeight() / 2);
         im4.setPosition(stage.getWidth() * 0.45f,stage.getHeight() / 2);
         im5.setPosition(stage.getWidth() * 0.55f,stage.getHeight() / 2);
-        back.setPosition(stage.getWidth() * 0.1f,stage.getHeight() * 0.15f);
+        back.setPosition(stage.getWidth() * 0.55f,stage.getHeight() * 0.15f);
         back.setScale(2);
         back.setOrigin( back.getWidth() / 2 ,  back.getHeight() / 2);
 
@@ -183,7 +185,7 @@ public class MainMenuScreen implements Screen {
         });
         hiscoretext = new ScoreText();
         hiscoretext.text =hiscore + "点";
-        hiscoretext.setPosition(200 + bestscore.getWidth() + 10, /*stage.getHeight() - 300 - */stage.getHeight()*0.25f);
+        hiscoretext.setPosition(bestscore.getX(), bestscore.getY());
         stage.addActor(hiscoretext);
     }
     public void settokuten(){
@@ -203,7 +205,7 @@ public class MainMenuScreen implements Screen {
         Gdx.app.log("TapRhythm:three","" + three);
         Gdx.app.log("TapRhythm:four","" + four);
         Gdx.app.log("TapRhythm:five","" + five);
-    }
+}
 
     @Override//
     public void render(float delta) {
