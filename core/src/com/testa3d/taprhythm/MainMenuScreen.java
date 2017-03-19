@@ -310,13 +310,13 @@ public class MainMenuScreen implements Screen {
 
     // 経過時間に対して、スコアの表示フェーズを返す
     private int getPhase(float duration) {
-        if (duration < 2) {
+        if (duration < 3) {
             return 5;
-        } else if (duration < 2.5f) {
+        } else if (duration < 3.5f) {
             return 4;
-        } else if (duration < 3.0f) {
+        } else if (duration < 4f) {
             return 3;
-        } else if (duration < 3.8f) {
+        } else if (duration < 4.78f) {
             return 2;
         } else {
             return 1;
