@@ -63,6 +63,7 @@ public class GameScreen implements Screen {
     }
     private Long FinishTime;
     private ScoreText scoreText;
+    private ScoreText nowpattern;
     private boolean oboeta = false;
     private Stage stage;
     private int nowquestion = 1;
@@ -276,7 +277,10 @@ public class GameScreen implements Screen {
         setumei2 = new Image(new Texture(Gdx.files.internal("Kiitatoorini.png")));
         exit = new Image(new Texture(Gdx.files.internal("Exit.png")));
         //ここまで定義-------------------------------------------
-
+        nowpattern = new ScoreText();
+        nowpattern.text="あいうえお";
+        nowpattern.setPosition(32,stage.getHeight());
+        stage.addActor(nowpattern);
 
         //問題生成-------------------------------------
         //問題生成終了---------------------------------
@@ -774,6 +778,7 @@ public class GameScreen implements Screen {
     @Override
     public void render (float delta) {
         Long nowtime = TimeUtils.millis();
+nowpattern.text = "現在のPattern:" + nowquestion;
 
         // camera.update();
         if (isFinished) {
